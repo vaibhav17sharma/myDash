@@ -12,13 +12,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       # Persist project configurations
       - ./projects.json:/app/projects.json
+    ports:
+      - "3030:3030"
     networks:
       - mydash-network
     environment:
       - NODE_ENV=production
-      - HOST_ROOT=/host
-    # Run with elevated privileges for terminal access
-    privileged: true
 
   frontend:
     build:
