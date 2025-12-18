@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import { createServer } from 'http';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { spawn as ptySpawn } from 'node-pty';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -71,6 +72,24 @@ app.delete('/api/projects/:id', (req, res) => {
   projects = projects.filter(p => p.id !== req.params.id);
   saveProjects(projects);
   res.json({ success: true });
+});
+
+// Proxy endpoint to forward requests to localhost projects on host
+// Usage: /proxy/3000/path -> http://host.docker.internal:3000/path
+app.use('/proxy/:port', (req, res, next) => {
+  const port = req.params.port;
+  const proxy = createProxyMiddleware({
+    target: `http://host.docker.internal:${port}`,
+    changeOrigin: true,
+    pathRewrite: {
+      [`^/proxy/${port}`]: '', // Remove /proxy/PORT from the path
+    },
+    onError: (err, req, res) => {
+      console.error('Proxy error:', err);
+      res.status(502).json({ error: 'Bad Gateway', message: err.message });
+    },
+  });
+  proxy(req, res, next);
 });
 
 // Create HTTP server
