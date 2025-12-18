@@ -148,7 +148,7 @@ function Terminal() {
           id: terminalId,
           cols: cols,
           rows: rows,
-          cwd: "/",
+          cwd: "/mnt/hdd",
         })
       );
 
