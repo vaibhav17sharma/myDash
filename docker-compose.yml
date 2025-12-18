@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: mydash-backend
+    restart: unless-stopped
+    volumes:
+      # Mount specific directory instead of entire host filesystem
+      - /mnt/hdd:/mnt/hdd
+      # Mount Docker socket for container management
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Persist project configurations
+      - ./projects.json:/app/projects.json
+    networks:
+      - mydash-network
+    environment:
+      - NODE_ENV=production
+      - HOST_ROOT=/host
+    # Run with elevated privileges for terminal access
+    privileged: true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: mydash-frontend
+    restart: unless-stopped
+    ports:
+      - "3003:80"
+    depends_on:
+      - backend
+    networks:
+      - mydash-network
+    environment:
+      - NODE_ENV=production
+
+networks:
+  mydash-network:
+    driver: bridge

@@ -1,0 +1,22 @@
+# Backend Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install build dependencies for node-pty
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy server file
+COPY server.js ./
+
+# Expose backend port
+EXPOSE 3030
+
+# Start the server
+CMD ["node", "server.js"]
