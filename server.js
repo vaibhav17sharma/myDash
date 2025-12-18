@@ -81,8 +81,9 @@ app.use('/proxy/:port', (req, res, next) => {
   const proxy = createProxyMiddleware({
     target: `http://host.docker.internal:${port}`,
     changeOrigin: true,
-    pathRewrite: {
-      [`^/proxy/${port}`]: '', // Remove /proxy/PORT from the path
+    pathRewrite: (path, req) => {
+      // Remove /proxy/PORT from the path
+      return path.replace(`/proxy/${port}`, '');
     },
     onError: (err, req, res) => {
       console.error('Proxy error:', err);
