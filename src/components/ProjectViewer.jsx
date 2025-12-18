@@ -35,11 +35,7 @@ function ProjectViewer({ project }) {
     );
   }
 
-  // Use proxy URL to access localhost projects through the backend
-  // This works both locally and through tunnels
-  const url = `/proxy/${project.port}${project.path || "/"}`;
-  const externalUrl = `http://localhost:${project.port}${project.path || "/"}`;
-
+  const url = `http://localhost:${project.port}${project.path || "/"}`;
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
@@ -60,18 +56,18 @@ function ProjectViewer({ project }) {
             {project.name}
           </h3>
           <a
-            href={externalUrl}
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs font-mono text-primary hover:text-secondary hover:underline transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
           >
-            {externalUrl}
+            {url}
           </a>
         </div>
         <div className="flex gap-2">
           <button
             className="w-8 h-8 bg-bg-tertiary text-gray-400 rounded-lg flex items-center justify-center text-lg transition-all hover:bg-bg-hover hover:text-white hover:scale-105"
-            onClick={() => window.open(externalUrl, "_blank")}
+            onClick={() => window.open(url, "_blank")}
             title="Open in New Tab"
           >
             ↗

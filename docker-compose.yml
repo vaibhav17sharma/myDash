@@ -26,12 +26,10 @@ services:
       dockerfile: Dockerfile.frontend
     container_name: mydash-frontend
     restart: unless-stopped
-    ports:
-      - "3003:80"
+    # Use host network to access localhost projects directly
+    network_mode: host
     depends_on:
       - backend
-    networks:
-      - mydash-network
     environment:
       - NODE_ENV=production
 
